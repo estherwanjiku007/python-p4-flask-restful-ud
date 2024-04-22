@@ -67,21 +67,60 @@ class Newsletters(Resource):
 
 api.add_resource(Newsletters, '/newsletters')
 
-class NewsletterByID(Resource):
+# class NewsletterByID(Resource):
 
-    def get(self, id):
+#     def get(self, id):
 
-        response_dict = Newsletter.query.filter_by(id=id).first().to_dict()
+#         response_dict = Newsletter.query.filter_by(Newsletter.id==id).first().to_dict()
 
-        response = make_response(
-            response_dict,
-            200,
-        )
+#         response = make_response(
+#             response_dict,
+#             200,
+#         )
 
-        return response
-
-api.add_resource(NewsletterByID, '/newsletters/<int:id>')
-
+#         return response
+    
+#     def patch(self,id):        
+#         newsletter=Newsletter.query.filter(Newsletter.id==id).first()
+#         for attr in request.form:
+#             setattr(newsletter,attr,request.form[attr])
+#         db.session.add(newsletter)
+#         db.session.commit()
+#         response_dict=newsletter.to_dict()
+#         response=make_response(response_dict,200)
+#         return response
+    
+#     def delete(id):
+#         newsletter=Newsletter.query.filter(Newsletter.id==id).first()
+#         db.session.delete(newsletter)
+#         db.session.commit()
+#         response_dict={"message": "record successfully deleted"}
+#         response=make_response(response_dict,200)
+#         return response
+# api.add_resource(NewsletterByID, '/newsletters/<int:id>')
+class NewsLetterById(Resource):
+    def patch(self,id):
+        record=Newsletter.query.filter(Newsletter.id==id).first()
+        for attr in request.form:
+            setattr(record,attr,request.form[attr])
+            db.session.add(record)
+            db.session.commit()
+            res_dict=record.to_dict()
+            return make_response(res_dict,200)
+        
+    def delete(self,id):
+        record=Newsletter.query.filter(Newsletter.id==id).first()
+        if record:
+            db.session.delete(record)
+            db.session.commit()
+            res_dict={"Message":"Newsleter deleted successfully"}
+            return make_response(res_dict,200)
+        else:
+            response={
+                "Error":"Newsletter not found"
+            }
+            return make_response(response.to_dict(),404)
+api.add_resource(NewsLetterById,"/newsletter/<int:id>")
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy_serializer import SerializerMixin
-
+from flask_restful import   Resource,Api
+from flask import request
 db = SQLAlchemy()
 
+api=Api(app)
 class Newsletter(db.Model, SerializerMixin):
     __tablename__ = 'newsletters'
 
@@ -14,3 +16,4 @@ class Newsletter(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Newsletter {self.title}, published at {self.published_at}.>'
+from app import app
